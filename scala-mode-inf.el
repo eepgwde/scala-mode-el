@@ -51,17 +51,57 @@
 
 (require 'comint)
 
-(defgroup scala-mode-inf
-  nil
+(defgroup scala-mode-inf nil
   "Mode to interact with a Scala interpreter."
   :group 'scala
   :tag "Inferior Scala")
 
-(defcustom scala-interpreter "scala"
+(defvar scala-interpreter "scala"
+  "The interpreter that `run-scala' should run. This should
+ be a program in your PATH or the full pathname of the scala interpreter.")
+
+(defvar scala-args ""
+  "The arguments for the `run-scala' should run.")
+
+(defcustom scala-std-interpreter "scala"
   "The interpreter that `run-scala' should run. This should
  be a program in your PATH or the full pathname of the scala interpreter."
   :type 'string
   :group 'scala-mode-inf)
+
+(defcustom scala-std-interpreter "scala"
+  "The interpreter that `run-scala' should run. This should
+ be a program in your PATH or the full pathname of the scala interpreter."
+  :type 'string
+  :group 'scala-mode-inf)
+
+(defcustom scala-spark-interpreter "spark-shell"
+  "The interpreter that `run-scala' should run to use a Spark cluster. This should
+ be a program in your PATH or the full pathname of the Spark interpreter."
+  :type 'string
+  :group 'scala-mode-inf)
+
+(defcustom scala-edit-mark "// #mark"
+  "String to insert."
+  :type 'string
+  :group 'scala-mode-inf)
+
+(defcustom scala-edit-mark-re nil
+  "Regular expression for a line to mark the end of a block to send to the interpreter. Derived from `scala-edit-mark' by prefixing with ^."
+  :type 'string
+  :group 'scala-mode-inf)
+
+(defcustom scala-std-options nil
+  "*List of Scala interpreter options."
+  :type '(repeat string)
+  :group 'scala-mode-inf)
+
+(defcustom scala-spark-options nil
+  "*List of Spark Scala interpreter options."
+  :type '(repeat string)
+  :group 'scala-mode-inf)
+
+(defconst scala-inf-buffer-name0 "*inferior-scala*")
 
 (defconst scala-inf-buffer-name "*inferior-scala*")
 
@@ -96,7 +136,9 @@
 			 (read-string "Scala interpreter: " scala-interpreter)
                        scala-interpreter)))
   (unless (scala-interpreter-running-p-1)
+    (setq scala-inf-buffer-name scala-inf-buffer-name0)
     (setq scala-interpreter cmd-line)
+    (setq cmd-line (format "%s %s" scala-interpreter scala-args))
     (let ((cmd/args (split-string cmd-line)))
       (set-buffer
        (apply 'make-comint "inferior-scala" (car cmd/args) nil (cdr cmd/args))))
@@ -114,7 +156,8 @@
   "Switch to buffer containing the interpreter"
   (interactive)
   (scala-check-interpreter-running)
-  (switch-to-buffer scala-inf-buffer-name))
+  (switch-to-buffer-other-window scala-inf-buffer-name)
+  (end-of-buffer))
 
 (defvar scala-tmp-file nil)
 
@@ -160,15 +203,96 @@ def foo =
       ;; now we need to find the start
       (beginning-of-line)
       (while (and (not (= (point) (point-min)))
-                  (looking-at (mapconcat '(lambda (x) x)
+                  (looking-at (mapconcat #'(lambda (x) x)
                                          '("^$"       ; empty lines
                                            "^\\s-+"   ; empty lines or lines that start with whitespace
-                                           "^\\s-*}") ; lines that start with a '}'
+                                           "^\\s-*}") ; lines that end with a '}'
                                          "\\|")))
         (next-line -1)
         (beginning-of-line))
       (message "region %s %s" (point) end)
       (scala-eval-region (point) end))))
+
+;;; Send a paragraph and step forward.
+;;; This doesn't work at all well
+;;;###autoload
+(defun scala-eval-step ()
+  (interactive)
+  (save-excursion
+    (let ((beg (point)))
+      (forward-paragraph)
+      (scala-eval-region beg (point)) ))
+  (forward-paragraph))
+
+;;; Flips between the standard and the Spark interpreter.
+(defun scala-toggle ()
+  (interactive)
+  (setq scala-interpreter (if (string= scala-interpreter scala-std-interpreter) 
+			      (symbol-value 'scala-spark-interpreter)
+			    (symbol-value 'scala-std-interpreter)))
+
+  (setq scala-args (if (string= scala-interpreter scala-std-interpreter) 
+		       (mapconcat 'identity (default-value 'scala-std-options) " ")
+		     (mapconcat 'identity (default-value 'scala-spark-options) " ")) )
+    
+  (message "scala-interpreter: \"%s\"" scala-interpreter) )
+
+;;;###autoload
+(defun scala-eval-paste-region (start end)
+  "Send current region to Scala interpreter as a paste."
+  (interactive "r")
+  (scala-check-interpreter-running)
+  (comint-send-string scala-inf-buffer-name ":paste\n")
+  (comint-send-region scala-inf-buffer-name start end)
+  (let ((src0 (current-buffer)))
+    (switch-to-buffer scala-inf-buffer-name)
+    (comint-send-eof)
+    (pop-to-buffer src0))
+  )
+
+(defun scala-eval-paste-mark ()
+  (interactive "r")
+  (save-excursion 
+  (let ((beg (point)))
+    (re-search-forward scala-edit-mark-re)
+    (beginning-of-line)
+    (scala-eval-paste-region beg (point)) )) )
+
+(defun scala-eval-mark ()
+  (interactive "r")
+  (save-excursion 
+  (let ((beg (point)))
+    (re-search-forward scala-edit-mark-re)
+    (beginning-of-line)
+    (scala-eval-region beg (point)) )) )
+
+(defun scala-eval-paste-mark-step ()
+  (interactive)
+  (scala-eval-paste-mark)
+  (re-search-forward scala-edit-mark-re)
+  (next-line) )
+
+(defun scala-eval-mark-step ()
+  (interactive)
+  (scala-eval-mark)
+  (re-search-forward scala-edit-mark-re)
+  (next-line) )
+
+(defun scala-mark-backward ()
+  (interactive)
+  (next-line -1)
+  (re-search-backward scala-edit-mark-re)
+  (next-line))
+
+(defun scala-mark-forward ()
+  (interactive)
+  (next-line)
+  (re-search-forward scala-edit-mark-re))
+
+(defun scala-mark-insert ()
+  (interactive)
+  (next-line)
+  (re-search-forward scala-edit-mark-re))
 
 ;;;###autoload
 (defun scala-eval-buffer ()

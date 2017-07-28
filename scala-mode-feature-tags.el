@@ -88,7 +88,7 @@ Please see the contrib directory for ctags options for parsing scala files."
        (args (format scala-mode-feature:tags-option tags-file-name dir-name)))
     (shell-command
      (concat scala-mode-feature:tags-command " " args))
-    (flet ((yes-or-no-p (p) (if scala-mode-feature:tags-ask-when-reload
+    (cl-flet ((yes-or-no-p (p) (if scala-mode-feature:tags-ask-when-reload
 				(y-or-n-p p)
 			      t)))
       (visit-tags-table tags-file-name))

@@ -90,6 +90,17 @@
 
   ([scala feature] (cons "Features" (make-sparse-keymap "Features")))
 
+  ([scala feature paste-r]  '(menu-item "Paste region"		        scala-eval-paste-region :enable (scala-mode-ui:interpreter-running-p)))
+
+  ([scala feature paste-m]  '(menu-item "Paste to mark"		        scala-eval-paste-mark-step :enable (scala-mode-ui:interpreter-running-p)))
+
+  ([scala feature eval-m]  '(menu-item "Evaluate to mark"	        scala-eval-mark-step :enable (scala-mode-ui:interpreter-running-p)))
+
+  ([scala feature mark-f]  '(menu-item "Forward mark"			scala-mark-forward ))
+  ([scala feature mark-b]  '(menu-item "Backward mark"			scala-mark-backward ))
+
+  ([scala feature sep0]     '("---"))
+
   ([scala feature apropos]  '(menu-item "Tag apropos"		        tags-apropos))
   ([scala feature search]   '(menu-item "Tag search"		        tags-search))
   ([scala feature find]     '(menu-item "Tag find"		        find-tag))
@@ -101,7 +112,7 @@
 
   ([scala feature speedbar] '(menu-item "Speedbar Focus"		speedbar-get-focus))
 
-  ([scala feature sep0]     '("---"))
+  ([scala feature sep2]     '("---"))
 
   ([scala feature electric] '(menu-item "Toggle Scala Electric Mode" scala-electric-mode
 					:button (:toggle . (scala-mode-feature-electric-active-p))
@@ -111,10 +122,17 @@
 
   ([scala eval-buf]       '(menu-item "Evaluate buffer"          scala-eval-buffer           :enable (scala-mode-ui:interpreter-running-p)                  ))
   ([scala eval-reg]       '(menu-item "Evaluate region"          scala-eval-region           :enable (and (scala-mode-ui:interpreter-running-p) mark-active)))
+  ([scala eval-def]       '(menu-item "Evaluate definition"      scala-eval-definition       :enable (scala-mode-ui:interpreter-running-p)                  ))
+  ([scala eval-def]       '(menu-item "Evaluate step"            scala-eval-step             :enable (scala-mode-ui:interpreter-running-p)                  ))
+  ([scala eval-mark]       '(menu-item "Evaluate to mark"         scala-eval-mark-step        :enable (scala-mode-ui:interpreter-running-p)                  ))
   ([scala switch-interp]  '(menu-item "Switch to interpreter"    scala-switch-to-interpreter :enable (scala-mode-ui:interpreter-running-p)                  ))
   ([scala load-file]      '(menu-item "Load file in interpreter" scala-load-file             :enable (scala-mode-ui:interpreter-running-p)                  ))
   ([scala quit-interp]    '(menu-item "Quit interpreter"         scala-quit-interpreter      :enable (scala-mode-ui:interpreter-running-p)                  ))
   ([scala run-interp]     '(menu-item "Run interpreter..."       scala-run-scala             :enable (not (scala-mode-ui:interpreter-running-p))            ))
+  ([scala run-sbt]        '(menu-item "Run SBT..."               sbt-start                   :enable (not (scala-mode-ui:interpreter-running-p))            ))
+  ([scala use-spark]      '(menu-item "Toggle Interpreters..."   scala-toggle
+       :enable (not (scala-mode-ui:interpreter-running-p))            ))
+  ([scala sbt-console]    '(menu-item "SBT Console..."           run-scala                   :enable (scala-mode-ui:interpreter-running-p)                  ))
 
 )
 
@@ -138,11 +156,19 @@
 
    ([f1]                       'speedbar-get-focus)
 			        
+   ([(control c)(control o)]   'scala-switch-to-interpreter)
    ([(control c)(control l)]   'scala-load-file)
    ([(control c)(control r)]   'scala-eval-region)
+   ([(control c)(control d)]   'scala-eval-definition)
+   ([(control c)(control c)]   'scala-eval-step)
    ([(control c)(control b)]   'scala-eval-buffer)
+   ((scala-mode-ui:key "p r")  'scala-eval-paste-region)
+   ((scala-mode-ui:key "m b")  'scala-mark-backward)
+   ((scala-mode-ui:key "m f")  'scala-mark-forward)
+   ((scala-mode-ui:key "p m")  'scala-eval-paste-mark-step)
+   ((scala-mode-ui:key "m x")  'scala-eval-mark-step)
 			        
-   ([(control c)(control c)]   'comment-region)
+   ([(control c)(control j)]   'comment-region)
 
    ("}"                        'scala-electric-brace)
 
@@ -152,8 +178,3 @@
    ((scala-mode-ui:key "t s")  'tags-search)
    ((scala-mode-ui:key "t a")  'tags-apropos)
    )
-
-
-
-
-

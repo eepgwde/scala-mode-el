@@ -56,8 +56,12 @@
 
 ;; Attach .scala files to the scala-mode
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode))
-(modify-coding-system-alist 'file "\\.scala$"     'utf-8)
+(add-to-list 'auto-mode-alist '("\\.sc\\'" . scala-mode))
 
+(modify-coding-system-alist 'file "\\.scala$"     'utf-8)
+(modify-coding-system-alist 'file "\\.sc$"        'utf-8)
+
+(add-to-list 'auto-mode-alist '("\\.sbt\\'" . scala-mode))
 
 ;; Autoload from scala-mode.el
 (autoload (quote scala-mode) "scala-mode" "\
@@ -76,6 +80,7 @@ When started, run `scala-mode-hook'.
 (autoload (quote scala-switch-to-interpreter) "scala-mode-inf" "Switch to buffer containing the interpreter" t nil)
 
 (autoload (quote scala-eval-region) "scala-mode-inf" "Send current region to Scala interpreter." t nil)
+(autoload (quote scala-eval-definition) "scala-mode-inf" "Send current definition to Scala interpreter." t nil)
 
 (autoload (quote scala-eval-buffer) "scala-mode-inf" "Send whole buffer to Scala interpreter." t nil)
 

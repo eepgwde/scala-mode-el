@@ -107,10 +107,6 @@ through `mail-user-agent'."
      (concat "Emacs Scala mode v" scala-mode-version)
      '(scala-indent-step))))
 
-
-
-
-
 (defvar scala-mode-abbrev-table nil
   "Abbrev table in use in `scala-mode' buffers.")
 (define-abbrev-table 'scala-mode-abbrev-table nil)
@@ -159,20 +155,7 @@ When started, run `scala-mode-hook'.
   (interactive)
   ;; set up local variables
   (kill-all-local-variables)
-  (make-local-variable 'font-lock-defaults)
-  (make-local-variable 'paragraph-separate)
-  (make-local-variable 'paragraph-start)
-  (make-local-variable 'paragraph-ignore-fill-prefix)
-  (make-local-variable 'require-final-newline)
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-end)
-  (make-local-variable 'comment-start-skip)
-  (make-local-variable 'comment-end-skip)
-  (make-local-variable 'comment-column)
-  ;(make-local-variable 'comment-indent-function)
-  (make-local-variable 'indent-line-function)
-  ;;
-  (set-syntax-table scala-mode-syntax-table)
+    (set-syntax-table scala-mode-syntax-table)
   (setq major-mode                    'scala-mode
 	mode-name                     "Scala"
 	local-abbrev-table            scala-mode-abbrev-table
@@ -197,11 +180,34 @@ When started, run `scala-mode-hook'.
 	)
 
   (use-local-map scala-mode-map)
+  
+  (make-local-variable 'font-lock-defaults)
+  (make-local-variable 'outline-regexp)
+  (make-local-variable 'paragraph-start)
+  (make-local-variable 'paragraph-ignore-fill-prefix)
+  (make-local-variable 'require-final-newline)
+  (make-local-variable 'comment-start)
+  (make-local-variable 'comment-start)
+  (make-local-variable 'comment-end)
+  (make-local-variable 'comment-start-skip)
+  (make-local-variable 'comment-end-skip)
+  (make-local-variable 'comment-column)
+  (make-local-variable 'scala-std-options)
+  (make-local-variable 'scala-spark-options)
+  ;(make-local-variable 'comment-indent-function)
+
+  (if (not scala-edit-mark-re) 
+    (setq scala-edit-mark-re (concat "^" scala-edit-mark)) )
+
+  (make-local-variable 'scala-edit-mark)
+  (make-local-variable 'scala-edit-mark-re)
+
+  (make-local-variable 'indent-line-function)
+  ;;
+
   (turn-on-font-lock)
   (scala-mode-feature-install)
+  (setq scala-interpreter scala-std-interpreter)
   (if scala-mode-hook
       (run-hooks 'scala-mode-hook)))
-
-
-
 
