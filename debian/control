@@ -1,0 +1,19 @@
+Source: scala-mode-el
+Section: editors
+Priority: extra
+Maintainer: Mike O'Connor <stew@debian.org>
+Build-Depends: debhelper (>= 7.0.50~)
+Build-Depends-Indep: emacs
+Standards-Version: 3.9.2
+Vcs-Browser: http://git.vireo.org/scala-mode-el.git
+Vcs-Git: git://git.vireo.org/scala-mode-el.git
+Homepage: http://www.scala-lang.org
+
+Package: scala-mode-el
+Architecture: all
+Depends: ${misc:Depends}, emacs23 | emacsen
+Description: Emacs major mode for editing scala source code
+ scala-mode provides syntax highlighting and indentation for scala
+ source code inside emacs.  Included is the ability to interact with a
+ scala interpreter inside emacs and to send expressions from scala
+ source files to the running interpreter.

@@ -1,0 +1,21 @@
+;; -*-emacs-lisp-*-
+
+(if (not (file-exists-p "/usr/share/emacs/site-lisp/scala-mode"))
+    (message "Package scala-mode-el removed but not purged.  Skipping setup.")
+
+  (let ((instdir (concat "/usr/share/"
+                        (symbol-name debian-emacs-flavor)
+                        "/site-lisp/scala-mode")))
+
+    ;; Only load scala-mode if it has been installed.
+    (if (zerop (length (file-expand-wildcards instdir)))
+        (message "scala-mode not for this flavor.  Skipping.")
+
+      ;; The sml-mode package follows the Debian/GNU Linux 'emacsen' policy and
+      ;; byte-compiles its elisp files for each 'emacs flavor'.  The compiled
+      ;; code is then installed in a subdirectory of the respective site-lisp
+      ;; directory.
+      (debian-pkg-add-load-path-item instdir)
+
+      ;; Autoload sml-mode top-level functions site-wide.
+      (load "scala-mode-auto"))))
