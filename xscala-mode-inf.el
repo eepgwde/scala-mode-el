@@ -81,13 +81,13 @@
   :type 'string
   :group 'xscala-mode-inf)
 
-(defcustom xscala-edit-mark "// #mark"
+(defcustom scala-edit-mark "// #mark"
   "String to insert."
   :type 'string
   :group 'xscala-mode-inf)
 
-(defcustom xscala-edit-mark-re nil
-  "Regular expression for a line to mark the end of a block to send to the interpreter. Derived from `xscala-edit-mark' by prefixing with ^."
+(defcustom scala-edit-mark-re nil
+  "Regular expression for a line to mark the end of a block to send to the interpreter. Derived from `scala-edit-mark' by prefixing with ^."
   :type 'string
   :group 'xscala-mode-inf)
 
@@ -100,10 +100,6 @@
   "*List of Spark Scala interpreter options."
   :type '(repeat string)
   :group 'xscala-mode-inf)
-
-(defconst xscala-inf-buffer-name0 "*inferior-xscala*")
-
-(defconst xscala-inf-buffer-name "*inferior-xscala*")
 
 (define-derived-mode xscala-mode-inf comint-mode "Inferior Scala"
   "Major mode for interacting with a Scala interpreter.
@@ -120,98 +116,27 @@
   ;; (comint-send-string proc "\nemacs:end\n")) ;; Heineman's contrib (06/03/2007)
   (comint-send-string proc "\n"))
 
-;;;###autoload
-(defun xscala-interpreter-running-p-1 ()
-  ;; True iff a Scala interpreter is currently running in a buffer.
-  (comint-check-proc xscala-inf-buffer-name))
-
-(defun xscala-check-interpreter-running ()
-  (unless (xscala-interpreter-running-p-1)
-    (error "Scala interpreter not running")))
-
-;;;###autoload
-(defun xscala-run-xscala (cmd-line)
-  "Run a Scala interpreter in an Emacs buffer"
-  (interactive (list (if current-prefix-arg
-			 (read-string "Scala interpreter: " xscala-interpreter)
-                       xscala-interpreter)))
-  (unless (xscala-interpreter-running-p-1)
-    (setq xscala-inf-buffer-name xscala-inf-buffer-name0)
-    (setq xscala-interpreter cmd-line)
-    (setq cmd-line (format "%s %s" xscala-interpreter xscala-args))
-    (let ((cmd/args (split-string cmd-line)))
-      (set-buffer
-       (apply 'make-comint "inferior-xscala" (car cmd/args) nil (cdr cmd/args))))
-    (xscala-mode-inf)
-    (pop-to-buffer xscala-inf-buffer-name)))
-
-(defun xscala-send-string (str &rest args)
-  ;; Send string to interpreter
-  (comint-send-string xscala-inf-buffer-name (apply 'format str args))
-  ;; (comint-send-string xscala-inf-buffer-name "\nemacs:end\n")) Heineman's contrib (06/03/2007)
-  (comint-send-string xscala-inf-buffer-name "\n"))
-
-;;;###autoload
-(defun xscala-switch-to-interpreter ()
-  "Switch to buffer containing the interpreter"
-  (interactive)
-  (xscala-check-interpreter-running)
-  (switch-to-buffer-other-window xscala-inf-buffer-name)
-  (end-of-buffer))
-
 (defvar xscala-tmp-file nil)
 
 ;;;###autoload
 (defun xscala-eval-region (start end)
   "Send current region to Scala interpreter."
   (interactive "r")
-  (xscala-check-interpreter-running)
-  (comint-send-region xscala-inf-buffer-name start end)
-  (comint-send-string xscala-inf-buffer-name "\n"))
+  (ensime-inf-assert-running)
+  (comint-send-region ensime-inf-buffer-name start end)
+  (comint-send-string ensime-inf-buffer-name "\n"))
 
-;;;###autoload
-(defun xscala-eval-definition ()
-  "Send the current 'definition' to the Scala interpreter.
-This function's idea of a definition is the block of text ending
-in the current line (or the first non-empty line going
-backwards), and begins in the first line that is not empty and
-does not start with whitespace or '{'.
-
-For example:
-
-println( \"aja\")
-println( \"hola\" )
-
-if the cursor is somewhere in the second print statement, the
-interpreter should output 'hola'.
-
-In the following case, if the cursor is in the second line, then
-the complete function definition will be send to the interpreter:
-
-def foo =
-  1 + 2
-"
-  (interactive)
-  (save-excursion
-    ;; find the first non-empty line
-    (beginning-of-line)
-    (while (and (not (= (point) (point-min)))
-                (looking-at "\\s-*$"))
-      (next-line -1))
-    (end-of-line)
-    (let ((end (point)))
-      ;; now we need to find the start
-      (beginning-of-line)
-      (while (and (not (= (point) (point-min)))
-                  (looking-at (mapconcat #'(lambda (x) x)
-                                         '("^$"       ; empty lines
-                                           "^\\s-+"   ; empty lines or lines that start with whitespace
-                                           "^\\s-*}") ; lines that end with a '}'
-                                         "\\|")))
-        (next-line -1)
-        (beginning-of-line))
-      (message "region %s %s" (point) end)
-      (xscala-eval-region (point) end))))
+(defun xscala-eval-paste-region (start end)
+  "Send current region to Scala interpreter as a paste."
+  (interactive "r")
+  (ensime-inf-assert-running)
+  (comint-send-string ensime-inf-buffer-name ":paste\n")
+  (comint-send-region ensime-inf-buffer-name start end)
+  (let ((src0 (current-buffer)))
+    (switch-to-buffer ensime-inf-buffer-name)
+    (comint-send-eof)
+    (pop-to-buffer src0))
+  )
 
 ;;; Send a paragraph and step forward.
 ;;; This doesn't work at all well
@@ -237,24 +162,11 @@ def foo =
     
   (message "xscala-interpreter: \"%s\"" xscala-interpreter) )
 
-;;;###autoload
-(defun xscala-eval-paste-region (start end)
-  "Send current region to Scala interpreter as a paste."
-  (interactive "r")
-  (xscala-check-interpreter-running)
-  (comint-send-string xscala-inf-buffer-name ":paste\n")
-  (comint-send-region xscala-inf-buffer-name start end)
-  (let ((src0 (current-buffer)))
-    (switch-to-buffer xscala-inf-buffer-name)
-    (comint-send-eof)
-    (pop-to-buffer src0))
-  )
-
 (defun xscala-eval-paste-mark ()
   (interactive "r")
   (save-excursion 
   (let ((beg (point)))
-    (re-search-forward xscala-edit-mark-re)
+    (re-search-forward scala-edit-mark-re)
     (beginning-of-line)
     (xscala-eval-paste-region beg (point)) )) )
 
@@ -262,37 +174,37 @@ def foo =
   (interactive "r")
   (save-excursion 
   (let ((beg (point)))
-    (re-search-forward xscala-edit-mark-re)
+    (re-search-forward scala-edit-mark-re)
     (beginning-of-line)
     (xscala-eval-region beg (point)) )) )
 
 (defun xscala-eval-paste-mark-step ()
   (interactive)
   (xscala-eval-paste-mark)
-  (re-search-forward xscala-edit-mark-re)
+  (re-search-forward scala-edit-mark-re)
   (next-line) )
 
 (defun xscala-eval-mark-step ()
   (interactive)
   (xscala-eval-mark)
-  (re-search-forward xscala-edit-mark-re)
+  (re-search-forward scala-edit-mark-re)
   (next-line) )
 
 (defun xscala-mark-backward ()
   (interactive)
   (next-line -1)
-  (re-search-backward xscala-edit-mark-re)
+  (re-search-backward scala-edit-mark-re)
   (next-line))
 
 (defun xscala-mark-forward ()
   (interactive)
   (next-line)
-  (re-search-forward xscala-edit-mark-re))
+  (re-search-forward scala-edit-mark-re))
 
 (defun xscala-mark-insert ()
   (interactive)
   (next-line)
-  (re-search-forward xscala-edit-mark-re))
+  (re-search-forward scala-edit-mark-re))
 
 ;;;###autoload
 (defun xscala-eval-buffer ()
@@ -310,16 +222,10 @@ Used for determining the default in the next one.")
   "Load a file in the Scala interpreter."
   (interactive (comint-get-source "Load Scala file: " xscala-prev-l/c-dir/file
 				  '(xscala-mode) t))
-  (xscala-check-interpreter-running)
+  (ensime-inf-assert-running)
   (comint-check-source file-name)
   (setq xscala-prev-l/c-dir/file (cons (file-name-directory file-name)
                                       (file-name-nondirectory file-name)))
-  (xscala-send-string ":load %s" file-name))
+  (ensime-inf-send-string ":load %s" file-name))
 
-;;;###autoload
-(defun xscala-quit-interpreter ()
-  "Quit Scala interpreter."
-  (interactive)
-  (xscala-check-interpreter-running)
-  (xscala-send-string "\n:quit"))
 

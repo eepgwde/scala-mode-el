@@ -197,11 +197,11 @@ When started, run `xscala-mode-hook'.
 	(setq comment-start-skip            "/\\*+ *\\|//+ *")
 	(setq comment-end-skip              " *\\*+/\\| *")
 
-  (if (not xscala-edit-mark-re) 
-    (setq xscala-edit-mark-re (concat "^" xscala-edit-mark)) )
+  (if (not scala-edit-mark-re) 
+    (setq scala-edit-mark-re (concat "^" scala-edit-mark)) )
 
-  (make-local-variable 'xscala-edit-mark)
-  (make-local-variable 'xscala-edit-mark-re)
+  (make-local-variable 'scala-edit-mark)
+  (make-local-variable 'scala-edit-mark-re)
 
   (make-local-variable 'indent-line-function)
   ;;

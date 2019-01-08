@@ -72,7 +72,7 @@
   (and (fboundp 'xscala-mode-inf)
        (let ((ism-def (symbol-function 'xscala-mode-inf)))
          (not (and (consp ism-def) (eq (car ism-def) 'autoload))))
-       (xscala-interpreter-running-p-1)))
+       (ensime-inf-running-p-1)))
 
 ;;; Menubar
 
@@ -90,7 +90,7 @@
 
   ([xscala feature] (cons "Features" (make-sparse-keymap "Features")))
 
-  ([xscala feature paste-r]  '(menu-item "Paste region"		        xscala-eval-paste-region :enable (xscala-mode-ui:interpreter-running-p)))
+  ([xscala feature paste-r]  '(menu-item "Paste region"		        ensime-inf-eval-region :enable (xscala-mode-ui:interpreter-running-p)))
 
   ([xscala feature paste-m]  '(menu-item "Paste to mark"		        xscala-eval-paste-mark-step :enable (xscala-mode-ui:interpreter-running-p)))
 
@@ -120,19 +120,19 @@
 
   ([xscala sep1]           '("---"))
 
-  ([xscala eval-buf]       '(menu-item "Evaluate buffer"          xscala-eval-buffer           :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-reg]       '(menu-item "Evaluate region"          xscala-eval-region           :enable (and (xscala-mode-ui:interpreter-running-p) mark-active)))
-  ([xscala eval-def]       '(menu-item "Evaluate definition"      xscala-eval-definition       :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-def]       '(menu-item "Evaluate step"            xscala-eval-step             :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-mark]       '(menu-item "Evaluate to mark"         xscala-eval-mark-step        :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala switch-interp]  '(menu-item "Switch to interpreter"    xscala-switch-to-interpreter :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala load-file]      '(menu-item "Load file in interpreter" xscala-load-file             :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala quit-interp]    '(menu-item "Quit interpreter"         xscala-quit-interpreter      :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala run-interp]     '(menu-item "Run interpreter..."       xscala-run-xscala             :enable (not (xscala-mode-ui:interpreter-running-p))            ))
-  ([xscala run-sbt]        '(menu-item "Run SBT..."               sbt-start                   :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+  ([xscala eval-buf]       '(menu-item "Evaluate buffer"          ensime-inf-eval-buffer      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala eval-reg]       '(menu-item "Evaluate region"          xscala-eval-region          :enable (and (xscala-mode-ui:interpreter-running-p) mark-active)))
+  ([xscala eval-def]       '(menu-item "Evaluate definition"      ensime-inf-eval-definition      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala eval-def]       '(menu-item "Evaluate step"            xscala-eval-step            :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala eval-mark]       '(menu-item "Evaluate to mark"        xscala-eval-mark-step      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala switch-interp]  '(menu-item "Switch to interpreter"    ensime-inf-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala load-file]      '(menu-item "Load file in interpreter" ensime-inf-load-file        :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala quit-interp]    '(menu-item "Quit interpreter"         ensime-inf-quit-interpreter     :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala run-interp]     '(menu-item "Run interpreter..."       ensime-inf-run-scala        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+  ([xscala run-sbt]        '(menu-item "Run SBT..."               ensime-sbt-switch                   :enable (not (xscala-mode-ui:interpreter-running-p))            ))
   ([xscala use-spark]      '(menu-item "Toggle Interpreters..."   xscala-toggle
        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
-  ([xscala sbt-console]    '(menu-item "SBT Console..."           run-xscala                   :enable (xscala-mode-ui:interpreter-running-p)                  ))
+  ([xscala sbt-console]    '(menu-item "SBT Console..."           ensime-sbt-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
 
 )
 
@@ -156,13 +156,13 @@
 
    ([f1]                       'speedbar-get-focus)
 			        
-   ([(control c)(control o)]   'xscala-switch-to-interpreter)
-   ([(control c)(control l)]   'xscala-load-file)
-   ([(control c)(control r)]   'xscala-eval-region)
-   ([(control c)(control d)]   'xscala-eval-definition)
-   ([(control c)(control c)]   'xscala-eval-step)
-   ([(control c)(control b)]   'xscala-eval-buffer)
-   ((xscala-mode-ui:key "p r")  'xscala-eval-paste-region)
+   ([(control c)(control o)]   'ensime-inf-switch)
+   ([(control c)(control l)]   'ensime-inf-load-file)
+   ([(control c)(control r)]   'ensime-inf-eval-region)
+   ([(control c)(control d)]   'ensime-inf-eval-definition)
+   ((xscala-mode-ui:key "c s")  'xscala-eval-step)
+   ([(control c)(control b)]   'ensime-inf-eval-buffer)
+   ((xscala-mode-ui:key "p r")  'xscala-eval-region)
    ((xscala-mode-ui:key "m b")  'xscala-mark-backward)
    ((xscala-mode-ui:key "m f")  'xscala-mark-forward)
    ((xscala-mode-ui:key "p m")  'xscala-eval-paste-mark-step)

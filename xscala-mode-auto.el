@@ -73,7 +73,7 @@ When started, run `xscala-mode-hook'.
 
 
 ;; Autoload from xscala-mode-inf.el
-(autoload (quote xscala-interpreter-running-p-1) "xscala-mode-inf" nil t nil)
+(autoload (quote ensime-inf-running-p-1) "xscala-mode-inf" nil t nil)
 
 (autoload (quote xscala-run-xscala) "xscala-mode-inf" "Run a Scala interpreter in an Emacs buffer" t nil)
 

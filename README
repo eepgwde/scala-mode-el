@@ -1,5 +1,16 @@
 In Emacs, this file should be read in -*- Outline -*- mode.
 
+* Stop Press: using ensime
+
+This Scala Mode now interacts with the Ensime system.
+The original standalone is now the branch sbt-inter0.
+
+This master branch now has a dev branch as ensime-inter0.
+
+This is now a Minor Mode known as xscala-mode. It really only
+provides a few keyboard shortcuts for pasting to the Ensime 
+interpreter. It has it's own menu too.
+
 * Introduction
 
 This directory contains the Emacs mode for Scala programs. This mode
