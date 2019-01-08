@@ -52,21 +52,6 @@
 (require 'xscala-mode-variables)
 (require 'comint)
 
-(defgroup xscala-mode-inf nil
-  "Mode to interact with a Scala interpreter."
-  :group 'xscala
-  :tag "Inferior Scala")
-
-(defcustom scala-edit-mark "// #mark"
-  "String to insert."
-  :type 'string
-  :group 'xscala-mode-inf)
-
-(defcustom scala-edit-mark-re nil
-  "Regular expression for a line to mark the end of a block to send to the interpreter. Derived from `scala-edit-mark' by prefixing with ^."
-  :type 'string
-  :group 'xscala-mode-inf)
-
 (define-derived-mode xscala-mode-inf comint-mode "Inferior Scala"
   "Major mode for interacting with a Scala interpreter.
 
