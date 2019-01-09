@@ -128,7 +128,7 @@
 			     ([xscala switch-interp]  '(menu-item "Switch to interpreter"    ensime-inf-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
 			     ([xscala load-file]      '(menu-item "Load file in interpreter" ensime-inf-load-file        :enable (xscala-mode-ui:interpreter-running-p)                  ))
 			     ([xscala quit-interp]    '(menu-item "Quit interpreter"         ensime-inf-quit-interpreter     :enable (xscala-mode-ui:interpreter-running-p)                  ))
-			     ([xscala run-interp]     '(menu-item "Run interpreter..."       ensime-inf-run-scala        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+			     ([xscala run-interp]     '(menu-item "Run interpreter..."       xscala-starter        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
 			     ([xscala run-sbt]        '(menu-item "Run SBT..."               ensime-sbt-switch                   :enable (not (xscala-mode-ui:interpreter-running-p))            ))
 			     ([xscala use-spark]      '(menu-item "Toggle Interpreters..."   xscala-toggle
 								  :enable (not (xscala-mode-ui:interpreter-running-p))            ))

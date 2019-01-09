@@ -1,6 +1,6 @@
 In Emacs, this file should be read in -*- Outline -*- mode.
 
-* Stop Press: using ensime
+* Stop Press: using ensime in spacemacs
 
 This Scala Mode now interacts with the Ensime system.
 The original standalone is now the branch sbt-inter0.
@@ -8,13 +8,25 @@ The original standalone is now the branch sbt-inter0.
 This master branch now has a dev branch as ensime-inter0.
 
 This is now a Minor Mode known as xscala-mode. It really only
-provides a few keyboard shortcuts for pasting to the Ensime 
-interpreter. It has it's own menu too: XScala.
+provides a few keyboard shortcuts for pasting to Scala interpreters. It uses
+a lot of the Ensime functions. It has it's own menu too: XScala.
 
 The most useful feature added is that you can change the buffer that commands
 are sent to. If you don't want to use the Ensime Scala interpreter and want to paste 
 into the sbt console, you go to the console buffer and M-x xscala-toggle. That
 sets ensime-inf-buffer-name and that receives the pasted commands from xscala-mode buffers.
+
+This has been extended to support an arbitrary interpreter (I use spark-shell).
+The XScala Run interpreter will start it. Use customize to change the interpreter.
+
+The idea of the keyboard shortcuts is to work with the Outline mode so that you can step
+through a file sending the Outline blocks.
+
+There is an example file demo.sc that shows the use of scala-edit-mark-re and
+outline-minor-mode.
+
+The rest of this document is from the original scala-mode-el. I don't know if
+this mode will work in the manner described. I use this mode in spacemacs.
 
 * Introduction
 

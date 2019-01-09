@@ -70,6 +70,25 @@ that commands are sent to by using the function `xscala-toggle'. A use-case woul
   (setq ensime-inf-buffer-name x0)
   (message "ensime-inf-buffer-name: \"%s\"" ensime-inf-buffer-name) )
 
+(defun xscala-starter ()
+  "Run an inferior instance of `xscala-interpreter' inside Emacs. https://www.masteringemacs.org/article/comint-writing-command-interpreter "
+  (interactive)
+  (let* ((xscala-program xscala-interpreter)
+         (buffer (comint-check-proc "xscala")))
+    ;; pop to the "*xscala*" buffer if the process is dead, the
+    ;; buffer is missing or it's got the wrong mode.
+    (pop-to-buffer-same-window
+     (if (or buffer (not (derived-mode-p 'xscala-mode))
+             (comint-check-proc (current-buffer)))
+         (get-buffer-create (or buffer "*xscala*"))
+       (current-buffer)))
+    ;; create the comint process if there is no buffer.
+    (unless buffer
+      (apply 'make-comint-in-buffer "xscala" buffer
+             xscala-program nil xscala-interpreter-options)
+      (xscala-mode)
+      (xscala-toggle))))
+
 (defun xscala-input-sender (proc string)
   (comint-send-string proc string)
   ;; (comint-send-string proc "\nemacs:end\n")) ;; Heineman's contrib (06/03/2007)
@@ -83,18 +102,23 @@ that commands are sent to by using the function `xscala-toggle'. A use-case woul
   (interactive "r")
   (ensime-inf-assert-running)
   (comint-send-region ensime-inf-buffer-name start end)
-  (comint-send-string ensime-inf-buffer-name "\n"))
+  (comint-send-string ensime-inf-buffer-name "\n")
+  (sleep-for 0.2)
+)
 
 (defun xscala-eval-paste-region (start end)
   "Send current region to Scala interpreter as a paste."
-  (interactive "r")
+  (interactive)
   (ensime-inf-assert-running)
-  (comint-send-string ensime-inf-buffer-name ":paste\n")
-  (comint-send-region ensime-inf-buffer-name start end)
   (let ((src0 (current-buffer)))
+    (comint-send-string ensime-inf-buffer-name ":paste\n")
+    (comint-send-region ensime-inf-buffer-name start end)
     (switch-to-buffer ensime-inf-buffer-name)
+    (comint-send-string nil "\n")
+    (sleep-for 0.2)
     (comint-send-eof)
-    (pop-to-buffer src0))
+    (sleep-for 0.2)
+    (pop-to-buffer-same-window src0))
   )
 
 ;;; Send a paragraph and step forward.
@@ -109,7 +133,7 @@ that commands are sent to by using the function `xscala-toggle'. A use-case woul
   (forward-paragraph))
 
 (defun xscala-eval-paste-mark ()
-  (interactive "r")
+  (interactive)
   (save-excursion 
   (let ((beg (point)))
     (re-search-forward scala-edit-mark-re)
@@ -117,7 +141,7 @@ that commands are sent to by using the function `xscala-toggle'. A use-case woul
     (xscala-eval-paste-region beg (point)) )) )
 
 (defun xscala-eval-mark ()
-  (interactive "r")
+  (interactive)
   (save-excursion 
   (let ((beg (point)))
     (re-search-forward scala-edit-mark-re)

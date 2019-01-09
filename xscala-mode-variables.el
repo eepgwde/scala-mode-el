@@ -59,6 +59,16 @@
   :group 'xscala-mode-inf
   :tag "Inferior Scala")
 
+(defcustom xscala-interpreter "/misc/share/1/spark/bin/spark-shell"
+  "An alternative interpreter."
+  :type 'string
+  :group 'xscala-mode-inf)
+
+(defcustom xscala-interpreter-options '("--master" "local[2]")
+  "Arguments for the alternative interpreter."
+  :type '(repeat string)
+  :group 'xscala-mode-inf)
+
 (defcustom scala-edit-mark "// #mark"
   "String to insert."
   :type 'string
