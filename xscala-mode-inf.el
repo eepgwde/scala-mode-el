@@ -53,7 +53,8 @@
 (require 'comint)
 
 (define-derived-mode xscala-mode-inf comint-mode "Inferior Scala"
-  "Major mode for interacting with a Scala interpreter.
+  "Minor mode for interacting with a Scala interpreter. It provides a means to change the buffer
+that commands are sent to by using the function `xscala-toggle'. A use-case would be to start the sbt console go to the sbt console, put it into \"console\" mode and invoke M-x xscala-toggle. Scala code will then be sent to that interpreter.
 
 \\{inferior-xscala-mode-map\\}"
   (define-key xscala-mode-inf-map [(meta return)] 'comint-accumulate)
@@ -61,6 +62,13 @@
   ;; Comint configuration
   (make-local-variable 'comint-input-sender)
   (setq comint-input-sender 'xscala-input-sender))
+
+(defun xscala-toggle (&optional x0)
+  "This sets the `ensime-inf-buffer-name' value to the string given or the name of the current buffer."
+  (interactive)
+  (or x0 (setq x0 (buffer-name)))
+  (setq ensime-inf-buffer-name x0)
+  (message "ensime-inf-buffer-name: \"%s\"" ensime-inf-buffer-name) )
 
 (defun xscala-input-sender (proc string)
   (comint-send-string proc string)
@@ -99,13 +107,6 @@
       (forward-paragraph)
       (xscala-eval-region beg (point)) ))
   (forward-paragraph))
-
-;;; Flips between the standard and the Spark interpreter.
-(defun xscala-toggle (&optional x0)
-  (interactive)
-  (or x0 (setq x0 (buffer-name)))
-  (setq ensime-inf-buffer-name x0)
-  (message "ensime-inf-buffer-name: \"%s\"" ensime-inf-buffer-name) )
 
 (defun xscala-eval-paste-mark ()
   (interactive "r")

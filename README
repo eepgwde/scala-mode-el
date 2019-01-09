@@ -9,7 +9,12 @@ This master branch now has a dev branch as ensime-inter0.
 
 This is now a Minor Mode known as xscala-mode. It really only
 provides a few keyboard shortcuts for pasting to the Ensime 
-interpreter. It has it's own menu too.
+interpreter. It has it's own menu too: XScala.
+
+The most useful feature added is that you can change the buffer that commands
+are sent to. If you don't want to use the Ensime Scala interpreter and want to paste 
+into the sbt console, you go to the console buffer and M-x xscala-toggle. That
+sets ensime-inf-buffer-name and that receives the pasted commands from xscala-mode buffers.
 
 * Introduction
 
