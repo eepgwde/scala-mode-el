@@ -101,17 +101,11 @@
   (forward-paragraph))
 
 ;;; Flips between the standard and the Spark interpreter.
-(defun xscala-toggle ()
+(defun xscala-toggle (&optional x0)
   (interactive)
-  (setq xscala-interpreter (if (string= xscala-interpreter xscala-std-interpreter) 
-			      (symbol-value 'xscala-spark-interpreter)
-			    (symbol-value 'xscala-std-interpreter)))
-
-  (setq xscala-args (if (string= xscala-interpreter xscala-std-interpreter) 
-		       (mapconcat 'identity (default-value 'xscala-std-options) " ")
-		     (mapconcat 'identity (default-value 'xscala-spark-options) " ")) )
-    
-  (message "xscala-interpreter: \"%s\"" xscala-interpreter) )
+  (or x0 (setq x0 (buffer-name)))
+  (setq ensime-inf-buffer-name x0)
+  (message "ensime-inf-buffer-name: \"%s\"" ensime-inf-buffer-name) )
 
 (defun xscala-eval-paste-mark ()
   (interactive "r")

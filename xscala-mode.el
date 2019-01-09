@@ -171,9 +171,8 @@ When started, run `xscala-mode-hook'.
         ;; When turning off outline mode, get rid of any outline hiding.
         ))
 
-;;	comment-indent-function       'xscala-comment-indent-function
-
-  (use-local-map xscala-mode-map)
+  ;; Somehow, it loads the menu without this.
+  ;; (use-local-map xscala-mode-map)
   
   ;; (make-local-variable 'font-lock-defaults)
   (make-local-variable 'outline-regexp)
@@ -186,9 +185,8 @@ When started, run `xscala-mode-hook'.
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-end-skip)
   (make-local-variable 'comment-column)
-  (make-local-variable 'xscala-std-options)
-  (make-local-variable 'xscala-spark-options)
-  ;;(make-local-variable 'comment-indent-function)
+  ;; Capture the buffer name for comint interaction.
+  (make-local-variable 'ensime-inf-buffer)
 
   (setq paragraph-separate            (concat "^\\s *$\\|" page-delimiter))
 	(setq paragraph-start               (concat "^\\s *$\\|" page-delimiter))
@@ -207,7 +205,6 @@ When started, run `xscala-mode-hook'.
   ;;
 
   (xscala-mode-feature-install)
-  (setq xscala-interpreter xscala-std-interpreter)
   (if xscala-mode-hook
       (run-hooks 'xscala-mode-hook)))
 

@@ -54,38 +54,9 @@
 (defvar xscala-mode-hook nil
   "Hook to run after installing xscala mode")
 
-(defvar xscala-interpreter "xscala"
-  "The interpreter that `run-xscala' should run. This should
- be a program in your PATH or the full pathname of the xscala interpreter.")
-
-(defvar xscala-args ""
-  "The arguments for the `run-xscala' should run.")
-
-(defcustom xscala-std-interpreter "xscala"
-  "The interpreter that `run-xscala' should run. This should
- be a program in your PATH or the full pathname of the xscala interpreter."
-  :type 'string
-  :group 'xscala-mode-inf)
-
-(defcustom xscala-spark-interpreter "spark-shell"
-  "The interpreter that `run-xscala' should run to use a Spark cluster. This should
- be a program in your PATH or the full pathname of the Spark interpreter."
-  :type 'string
-  :group 'xscala-mode-inf)
-
-(defcustom xscala-std-options nil
-  "*List of Scala interpreter options."
-  :type '(repeat string)
-  :group 'xscala-mode-inf)
-
-(defcustom xscala-spark-options nil
-  "*List of Spark Scala interpreter options."
-  :type '(repeat string)
-  :group 'xscala-mode-inf)
-
 (defgroup xscala-mode-inf nil
-  "Mode to interact with a Scala interpreter."
-  :group 'xscala
+  "Extra minor mode to interact with a Scala interpreter."
+  :group 'xscala-mode-inf
   :tag "Inferior Scala")
 
 (defcustom scala-edit-mark "// #mark"

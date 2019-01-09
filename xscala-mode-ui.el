@@ -78,63 +78,64 @@
 
 (xscala-mode-lib:define-keys xscala-mode-menu-bar-map
 
-  ([xscala] (cons "Scala" (make-sparse-keymap "ScalaMode")))
+			     ([xscala] (cons "XScala" (make-sparse-keymap "XScalaMode")))
 
-  ([xscala version]        '(menu-item "Version"              (lambda () (interactive) (message "Using xscala mode version %s (%s)" xscala-mode-version xscala-mode-svn-revision)) ))
-  ([xscala report-bug]     '(menu-item "Report bug"           xscala-mode:report-bug))
-  ([xscala customize]      '(menu-item "Customize"            (lambda () (interactive) (customize-group 'xscala))))
-  ([xscala browse-api]     '(menu-item "Browse Scala API"     xscala-mode:browse-api))
-  ([xscala browse-website] '(menu-item "Browse Scala Website" xscala-mode:browse-web-site))
+			     ([xscala version]        '(menu-item "Version"              (lambda () (interactive) (message "Using xscala mode version %s (%s)" xscala-mode-version xscala-mode-svn-revision)) ))
+			     ([xscala report-bug]     '(menu-item "Report bug"           xscala-mode:report-bug))
+			     ([xscala customize]      '(menu-item "Customize"            (lambda () (interactive) (customize-group 'xscala))))
+			     ([xscala browse-api]     '(menu-item "Browse Scala API"     xscala-mode:browse-api))
+			     ([xscala browse-website] '(menu-item "Browse Scala Website" xscala-mode:browse-web-site))
 
-  ([xscala sep0]           '("---"))
+			     ([xscala sep0]           '("---"))
 
-  ([xscala feature] (cons "Features" (make-sparse-keymap "Features")))
+			     ([xscala feature] (cons "XFeatures" (make-sparse-keymap "XFeatures")))
 
-  ([xscala feature paste-r]  '(menu-item "Paste region"		        ensime-inf-eval-region :enable (xscala-mode-ui:interpreter-running-p)))
+			     ([xscala feature paste-r]  '(menu-item "Paste region"		        ensime-inf-eval-region :enable (xscala-mode-ui:interpreter-running-p)))
 
-  ([xscala feature paste-m]  '(menu-item "Paste to mark"		        xscala-eval-paste-mark-step :enable (xscala-mode-ui:interpreter-running-p)))
+			     ([xscala feature paste-m]  '(menu-item "Paste to mark"		xscala-eval-paste-mark-step :enable (xscala-mode-ui:interpreter-running-p)))
 
-  ([xscala feature eval-m]  '(menu-item "Evaluate to mark"	        xscala-eval-mark-step :enable (xscala-mode-ui:interpreter-running-p)))
+			     ([xscala feature eval-m]  '(menu-item "Evaluate to mark"	        xscala-eval-mark-step :enable (xscala-mode-ui:interpreter-running-p)))
 
-  ([xscala feature mark-f]  '(menu-item "Forward mark"			xscala-mark-forward ))
-  ([xscala feature mark-b]  '(menu-item "Backward mark"			xscala-mark-backward ))
+			     ([xscala feature mark-f]  '(menu-item "Forward mark"			xscala-mark-forward ))
+			     ([xscala feature mark-b]  '(menu-item "Backward mark"			xscala-mark-backward ))
 
-  ([xscala feature sep0]     '("---"))
+			     ([xscala feature sep0]     '("---"))
 
-  ([xscala feature apropos]  '(menu-item "Tag apropos"		        tags-apropos))
-  ([xscala feature search]   '(menu-item "Tag search"		        tags-search))
-  ([xscala feature find]     '(menu-item "Tag find"		        find-tag))
-  ([xscala feature comp]	    '(menu-item "Tag complete word"	        xscala-mode-feature-tags-complete))
-  ([xscala feature load]	    '(menu-item "Load TAGS file"		xscala-mode-feature-tags-load))
-  ([xscala feature create]   '(menu-item "Create TAGS file"		xscala-mode-feature-tags-create))
+			     ([xscala feature apropos]  '(menu-item "Tag apropos"		        tags-apropos))
+			     ([xscala feature search]   '(menu-item "Tag search"		        tags-search))
+			     ([xscala feature find]     '(menu-item "Tag find"		        find-tag))
+			     ([xscala feature comp]     '(menu-item "Tag complete word"	        xscala-mode-feature-tags-complete))
+			     ([xscala feature load]     '(menu-item "Load TAGS file"	xscala-mode-feature-tags-load))
+			     ([xscala feature create]   '(menu-item "Create TAGS file"		xscala-mode-feature-tags-create))
 
-  ([xscala feature sep1]     '("---"))
+			     ([xscala feature sep1]     '("---"))
 
-  ([xscala feature speedbar] '(menu-item "Speedbar Focus"		speedbar-get-focus))
+			     ([xscala feature speedbar] '(menu-item "Speedbar Focus"		speedbar-get-focus))
 
-  ([xscala feature sep2]     '("---"))
+			     ([xscala feature sep2]     '("---"))
 
-  ([xscala feature electric] '(menu-item "Toggle Scala Electric Mode" xscala-electric-mode
-					:button (:toggle . (xscala-mode-feature-electric-active-p))
-					:help "Toggle on/off the electric insert mode for Scala files"))
+			     ([xscala feature electric] '(menu-item "Toggle Scala Electric Mode" xscala-electric-mode
+								    :button (:toggle . (xscala-mode-feature-electric-active-p))
+								    :help "Toggle on/off the electric insert mode for Scala files"))
 
-  ([xscala sep1]           '("---"))
+			     ([xscala sep1]           '("---"))
 
-  ([xscala eval-buf]       '(menu-item "Evaluate buffer"          ensime-inf-eval-buffer      :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-reg]       '(menu-item "Evaluate region"          xscala-eval-region          :enable (and (xscala-mode-ui:interpreter-running-p) mark-active)))
-  ([xscala eval-def]       '(menu-item "Evaluate definition"      ensime-inf-eval-definition      :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-def]       '(menu-item "Evaluate step"            xscala-eval-step            :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala eval-mark]       '(menu-item "Evaluate to mark"        xscala-eval-mark-step      :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala switch-interp]  '(menu-item "Switch to interpreter"    ensime-inf-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala load-file]      '(menu-item "Load file in interpreter" ensime-inf-load-file        :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala quit-interp]    '(menu-item "Quit interpreter"         ensime-inf-quit-interpreter     :enable (xscala-mode-ui:interpreter-running-p)                  ))
-  ([xscala run-interp]     '(menu-item "Run interpreter..."       ensime-inf-run-scala        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
-  ([xscala run-sbt]        '(menu-item "Run SBT..."               ensime-sbt-switch                   :enable (not (xscala-mode-ui:interpreter-running-p))            ))
-  ([xscala use-spark]      '(menu-item "Toggle Interpreters..."   xscala-toggle
-       :enable (not (xscala-mode-ui:interpreter-running-p))            ))
-  ([xscala sbt-console]    '(menu-item "SBT Console..."           ensime-sbt-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala eval-buf]       '(menu-item "Evaluate buffer"          ensime-inf-eval-buffer      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala eval-reg]       '(menu-item "Evaluate region"          xscala-eval-region          :enable (and (xscala-mode-ui:interpreter-running-p) mark-active)))
+			     ([xscala eval-def]       '(menu-item "Evaluate definition"      ensime-inf-eval-definition      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala eval-def]       '(menu-item "Evaluate step"            xscala-eval-step            :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala eval-mark]       '(menu-item "Evaluate to mark"        xscala-eval-mark-step      :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala switch-interp]  '(menu-item "Switch to interpreter"    ensime-inf-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala load-file]      '(menu-item "Load file in interpreter" ensime-inf-load-file        :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala quit-interp]    '(menu-item "Quit interpreter"         ensime-inf-quit-interpreter     :enable (xscala-mode-ui:interpreter-running-p)                  ))
+			     ([xscala run-interp]     '(menu-item "Run interpreter..."       ensime-inf-run-scala        :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+			     ([xscala run-sbt]        '(menu-item "Run SBT..."               ensime-sbt-switch                   :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+			     ([xscala use-spark]      '(menu-item "Toggle Interpreters..."   xscala-toggle
+								  :enable (not (xscala-mode-ui:interpreter-running-p))            ))
+			     ([xscala customize]      '(menu-item "Choose Interpreters"      (lambda () (interactive) (customize-group 'xscala-mode-inf))))
+			     ([xscala sbt-console]    '(menu-item "SBT Console..."           ensime-sbt-switch           :enable (xscala-mode-ui:interpreter-running-p)                  ))
 
-)
+			     )
 
 
 ;;; Shortcuts
@@ -145,36 +146,36 @@
 
 (xscala-mode-lib:define-keys xscala-mode-map
 
-   ;; Attach Menubar
-   ([menu-bar] xscala-mode-menu-bar-map)
+			     ;; Attach Menubar
+			     ([menu-bar] xscala-mode-menu-bar-map)
 
-   ;; Attach keyboard Shortcuts
-   ([(control tab)]            'xscala-undent-line)
-   ([backspace]                'backward-delete-char-untabify)
-   		                
-   ("\r"                       'xscala-newline)
+			     ;; Attach keyboard Shortcuts
+			     ([(control tab)]            'xscala-undent-line)
+			     ([backspace]                'backward-delete-char-untabify)
+			     
+			     ("\r"                       'xscala-newline)
 
-   ([f1]                       'speedbar-get-focus)
-			        
-   ([(control c)(control o)]   'ensime-inf-switch)
-   ([(control c)(control l)]   'ensime-inf-load-file)
-   ([(control c)(control r)]   'ensime-inf-eval-region)
-   ([(control c)(control d)]   'ensime-inf-eval-definition)
-   ((xscala-mode-ui:key "c s")  'xscala-eval-step)
-   ([(control c)(control b)]   'ensime-inf-eval-buffer)
-   ((xscala-mode-ui:key "p r")  'xscala-eval-region)
-   ((xscala-mode-ui:key "m b")  'xscala-mark-backward)
-   ((xscala-mode-ui:key "m f")  'xscala-mark-forward)
-   ((xscala-mode-ui:key "p m")  'xscala-eval-paste-mark-step)
-   ((xscala-mode-ui:key "m x")  'xscala-eval-mark-step)
-			        
-   ([(control c)(control j)]   'comment-region)
+			     ([f1]                       'speedbar-get-focus)
+			     
+			     ([(control c)(control o)]   'ensime-inf-switch)
+			     ([(control c)(control l)]   'ensime-inf-load-file)
+			     ([(control c)(control r)]   'ensime-inf-eval-region)
+			     ([(control c)(control d)]   'ensime-inf-eval-definition)
+			     ((xscala-mode-ui:key "c s")  'xscala-eval-step)
+			     ([(control c)(control b)]   'ensime-inf-eval-buffer)
+			     ((xscala-mode-ui:key "p r")  'xscala-eval-region)
+			     ((xscala-mode-ui:key "m b")  'xscala-mark-backward)
+			     ((xscala-mode-ui:key "m f")  'xscala-mark-forward)
+			     ((xscala-mode-ui:key "p m")  'xscala-eval-paste-mark-step)
+			     ((xscala-mode-ui:key "m x")  'xscala-eval-mark-step)
+			     
+			     ([(control c)(control j)]   'comment-region)
 
-   ("}"                        'xscala-electric-brace)
+			     ("}"                        'xscala-electric-brace)
 
-   ((xscala-mode-ui:key "t n")  'xscala-mode-feature-tags-create)
-   ((xscala-mode-ui:key "t l")  'xscala-mode-feature-tags-load)
-   ((xscala-mode-ui:key "t c")  'xscala-mode-feature-tags-complete)
-   ((xscala-mode-ui:key "t s")  'tags-search)
-   ((xscala-mode-ui:key "t a")  'tags-apropos)
-   )
+			     ((xscala-mode-ui:key "t n")  'xscala-mode-feature-tags-create)
+			     ((xscala-mode-ui:key "t l")  'xscala-mode-feature-tags-load)
+			     ((xscala-mode-ui:key "t c")  'xscala-mode-feature-tags-complete)
+			     ((xscala-mode-ui:key "t s")  'tags-search)
+			     ((xscala-mode-ui:key "t a")  'tags-apropos)
+			     )
